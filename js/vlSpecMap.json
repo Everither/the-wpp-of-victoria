@@ -1,0 +1,66 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "background": "transparent",
+    "params": [
+        {
+            "name": "searchLGA",
+            "value": "",
+            "bind": {
+                "input": "text",
+                "name": " "
+            }
+        },
+        {
+            "name": "largeView",
+            "bind": {
+                "input": "checkbox",
+                "name": "Large View",
+                "element": "#checkbox-container-lv"
+            }
+        }
+    ],
+    "width": 600,
+    "height": 350,
+    "data": {
+        "url": "data/LGA_2021_AUST_GDA2020_5pct_VIC.json",
+        "format": {"type": "topojson", "feature":"LGA_2021_AUST_GDA2020"}
+    },
+    "transform": [
+        {
+            "lookup": "properties.LGA_CODE21",
+            "from": {
+                "data": {"url": "data/2021_WPP_VIC_LGA.csv"},
+                "key": "POW_LGA_CODE_2021",
+                "fields": ["P_Tot_EWFT", "Tot_P", "Pro_Tot_P", "TecTW_Tot_P","NS_P", "M_35_39_Tot"]
+            }
+        },
+        {
+            "filter": "datum.properties.STE_NAME21 === 'Victoria'"
+        },
+        {
+            "filter": "!largeView ? true : datum.properties.LGA_NAME21 === 'Banyule' || datum.properties.LGA_NAME21 === 'Bayside' || datum.properties.LGA_NAME21 === 'Boroondara' || datum.properties.LGA_NAME21 === 'Darebin' || datum.properties.LGA_NAME21 === 'Glen Eira' || datum.properties.LGA_NAME21 === 'Maribyrnong' || datum.properties.LGA_NAME21 === 'Monash' || datum.properties.LGA_NAME21 === 'Melbourne' || datum.properties.LGA_NAME21 === 'Moonee Valley' || datum.properties.LGA_NAME21 === 'Moreland' || datum.properties.LGA_NAME21 === 'Port Phillip' || datum.properties.LGA_NAME21 === 'Stonnington' || datum.properties.LGA_NAME21 === 'Whitehorse' || datum.properties.LGA_NAME21 === 'Yarra' || datum.properties.LGA_NAME21 === 'Brimbank' || datum.properties.LGA_NAME21 === 'Cardinia' || datum.properties.LGA_NAME21 === 'Casey' || datum.properties.LGA_NAME21 === 'Frankston' || datum.properties.LGA_NAME21 === 'Greater Dandenong' || datum.properties.LGA_NAME21 === 'Hobsons Bay' || datum.properties.LGA_NAME21 === 'Hume' || datum.properties.LGA_NAME21 === 'Kingston' || datum.properties.LGA_NAME21 === 'Knox' || datum.properties.LGA_NAME21 === 'Manningham' || datum.properties.LGA_NAME21 === 'Maroondah' || datum.properties.LGA_NAME21 === 'Melton' || datum.properties.LGA_NAME21 === 'Mornington Peninsula' || datum.properties.LGA_NAME21 === 'Nillumbik' || datum.properties.LGA_NAME21 === 'Whittlesea' || datum.properties.LGA_NAME21 === 'Wyndham'"
+        }
+    ],
+    "mark": {
+        "type": "geoshape",
+        "stroke": "white"
+    },
+    "projection": {"type": "mercator"},
+    "encoding": {
+        "fill": {
+            "condition": {
+                "test": "searchLGA != '' ? lower(slice(datum.properties.LGA_NAME21, 0, length(searchLGA))) === lower(searchLGA) : true",
+                "field": "Tot_P",
+                "type": "quantitative",
+                "scale": {"scheme": "greens", "type": "sqrt", "domain": [1000, 300000]}, 
+                "legend": {"orient": "top-right"},
+                "title": "Number of Employed People"
+            },
+            "value": "#DDDDDD"
+        },
+        "tooltip": [
+            {"field": "properties.LGA_NAME21", "title": "Region"},
+            {"field": "Tot_P", "format": ",", "title": "Number of Employed People"}
+        ]
+    }
+}

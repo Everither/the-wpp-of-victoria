@@ -1,0 +1,75 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "background": "transparent",
+    "params": [
+        {
+            "name": "searchLGA",
+            "value": "",
+            "bind": {
+                "input": "text",
+                "name": " "
+            }
+        }
+    ],
+    "hconcat": [
+        {
+            "title": "Male",
+            "width": 230,
+            "height": 150,
+            "data": {"url": "data/2021_WPP_VIC_LGA_AD.csv"},
+            "mark": "bar",
+            "transform": [
+                {
+                    "filter": "searchLGA != '' ? lower(slice(datum.LGAName, 0, length(searchLGA))) === lower(searchLGA) : true"
+                },
+                {
+                    "filter": "datum.Sex == 'M'"
+                }
+            ],
+            "encoding": {
+                "x": {"field": "AgeBracket", "type": "nominal", "title": "Age Bracket"},
+                "y": {"aggregate": "sum", "field": "NumPeople", "type": "quantitative", "title": "Number of People"},
+                "color": {
+                    "field": "EmploymentType", 
+                    "type": "nominal", 
+                    "sort": "descending",
+                    "legend": {"orient": "bottom", "title": "Employment Type"}
+                },
+                "order": {"aggregate": "sum", "field": "yield"},
+                "tooltip": [
+                    {"field": "EmploymentType", "title": "Employment Type"},
+                    {"field": "NumPeople", "type": "quantitative", "aggregate": "sum", "format": ",", "title": "Number of People"}
+                ]
+            }
+        },
+        {
+            "title": "Female",
+            "width": 230,
+            "height": 150,
+            "data": {"url": "data/2021_WPP_VIC_LGA_AD.csv"},
+            "mark": "bar",
+            "transform": [
+                {
+                    "filter": "searchLGA != '' ? lower(slice(datum.LGAName, 0, length(searchLGA))) === lower(searchLGA) : true"
+                },
+                {
+                    "filter": "datum.Sex == 'F'"
+                }
+            ],
+            "encoding": {
+                "x": {"field": "AgeBracket", "type": "nominal", "title": "Age Bracket"},
+                "y": {"aggregate": "sum", "field": "NumPeople", "type": "quantitative", "title": "Number of People"},
+                "color": {
+                    "field": "EmploymentType", 
+                    "type": "nominal", 
+                    "sort": "descending"
+                },
+                "order": {"aggregate": "sum", "field": "yield"},
+                "tooltip": [
+                    {"field": "EmploymentType", "title": "Employment Type"},
+                    {"field": "NumPeople", "type": "quantitative", "aggregate": "sum", "format": ",", "title": "Number of People"}
+                ]
+            }
+        }
+    ]
+}

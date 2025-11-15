@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victoria Working Population Profile</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.25.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.14.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.24.0"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div id="site-wrapper">
+
+        <div class="vega-container head">
+            <div id="heading">The Working Population Profile of Victoria</div>
+            <div class="description">
+                <p>
+                    This visualisation explores the working population profile across every local government region in Victoria. It aims to answer the question: How does employment vary by region, age, gender, and occupation?
+                </p>
+                <p> 
+                    Data sourced from <a href="https://www.abs.gov.au/census/find-census-data/datapacks?release=2021&product=WPP&geography=ALL&header=S">2021 Census DataPacks - Working Population Profile</a>, 
+                    <a href="https://www.abs.gov.au/census/find-census-data/datapacks?release=2021&product=GCP&geography=ALL&header=S">2021 Census DataPacks - General Community Profile</a> 
+                    and <a href="https://www.abs.gov.au/statistics/standards/australian-statistical-geography-standard-asgs-edition-3/jul2021-jun2026/access-and-downloads/digital-boundary-files">Digital Boundary Files</a>
+                </p>
+            </div>
+        </div>
+        
+        <div class="vega-container param">
+            <div class="container-title">Filter</div>
+            <input type="text" id="searchLGA" placeholder="Search a Local Government Region...">
+        </div>
+        
+        <div class="vega-container map">
+            <div class="container-title">Geographical View</div>
+            <div class="description">A map of Victoria showing the number of employed people per local government region. </div>
+            <div id="vis-map"></div>
+            <div class="vega-container" id="map-options">
+                <div id="checkbox-container-lv"></div>
+            </div>
+        </div>
+        
+        <div class="vega-container emp">
+            <div class="container-title">Age Distribution</div>
+            <div class="description ag">A stacked bar chart showing the number of employed people for each employment type and age
+                bracket. An overall skew towards the younger generation can be observed. This is most apparent within the City of 
+                <button onclick="updateSearchText('searchLGA', 'Stonnington')" class="text-button">Stonnington.</button> 
+            </div>
+            <div id="vis-emp"></div>
+        </div>
+        
+        <div class="vega-container occ">
+            <div class="container-title">Occupation Breakdown</div>
+            <div class="description ag">
+                A doughnut chart showing the number of people in each occupation. 
+                It is evident that Technicians and Trades Workers is an occupation heavily dominated by males. 
+                Interestingly, most people in <button onclick="updateSearchText('searchLGA', 'Wyndham')" class="text-button">Wyndham</button> 
+                work as Machinery Operators and Drivers, which is unusual.
+            </div>
+            <div id="vis-occ"></div>
+        </div>
+
+        <div class="vega-container une">
+            <div class="container-title">Unemployment</div>
+            <div class="description ag">A doughnut chart showing the employment ratio. </div>
+            <div id="vis-une"></div>
+        </div>
+
+    </div>
+    
+    
+    <script>
+        // Function to programmatically insert some text in the search box
+        updateSearchText = function(inputId, text) {
+            const textInput = document.getElementById(inputId);
+            textInput.value = text;
+            textInput.dispatchEvent(new Event('input'));
+        }
+        
+        // Helper function for linking an external text input to a vega text param
+        linkParam = function(vegaContainerId, inputId) {
+            const paramInput = document.getElementById(vegaContainerId).children[0].children[1].children[0].children[0].children[1];
+            const textInput = document.getElementById(inputId)
+            textInput.addEventListener('input', () => {paramInput.value = textInput.value; paramInput.dispatchEvent(new Event('input'));});
+            paramInput.style.position = "absolute";
+            paramInput.style.left = "-9999px";
+        }
+
+        // Embed the visualisations
+        vegaEmbed("#vis-map", "js/vlSpecMap.json").then(() => { linkParam("vis-map", "searchLGA") });
+        vegaEmbed("#vis-emp", "js/vlSpecEmp.json").then(() => { linkParam("vis-emp", "searchLGA") });
+        vegaEmbed("#vis-occ", "js/vlSpecOcc.json").then(() => { linkParam("vis-occ", "searchLGA") });
+        vegaEmbed("#vis-une", "js/vlSpecUne.json").then(() => { linkParam("vis-une", "searchLGA") });
+    </script>
+</body>
+</html>

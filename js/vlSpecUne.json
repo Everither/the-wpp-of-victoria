@@ -1,0 +1,70 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+    "background": "transparent",
+    "params": [
+        {
+            "name": "searchLGA",
+            "value": "",
+            "bind": {
+                "input": "text",
+                "name": " "
+            }
+        }
+    ],
+    "hconcat": [
+        {
+            "title": "Male",
+            "width": 80,
+            "height": 80,
+            "data": {"url": "data/2021_WPP_VIC_LGA_UN.csv"},
+            "mark": {"type": "arc", "innerRadius": 20, "strokeWidth": 2, "stroke": "white"},
+            "transform": [
+                {
+                    "filter": "datum.Sex === 'M'"
+                },
+                {
+                    "filter": "searchLGA != '' ? lower(slice(datum.LGAName, 0, length(searchLGA))) === lower(searchLGA) : true"
+                }
+            ],
+            "encoding": {
+                "theta": {"field": "NumPeople", "type": "quantitative", "aggregate": "sum"},
+                "color": {
+                    "field": "EmployedUnemployed", 
+                    "type": "nominal",
+                    "legend": {"orient": "bottom", "title": "Status"},
+                    "scale": {"scheme": "accent"}
+                },
+                "tooltip": [
+                    {"field": "EmployedUnemployed", "title": "Status"},
+                    {"field": "NumPeople", "type": "quantitative", "aggregate": "sum", "format": ",", "title": "Number of People"}
+                ]
+            }
+        },
+        {
+            "title": "Female",
+            "width": 80,
+            "height": 80,
+            "data": {"url": "data/2021_WPP_VIC_LGA_UN.csv"},
+            "mark": {"type": "arc", "innerRadius": 20, "strokeWidth": 2, "stroke": "white"},
+            "transform": [
+                {
+                    "filter": "datum.Sex === 'F'"
+                },
+                {
+                    "filter": "searchLGA != '' ? lower(slice(datum.LGAName, 0, length(searchLGA))) === lower(searchLGA) : true"
+                }
+            ],
+            "encoding": {
+                "theta": {"field": "NumPeople", "type": "quantitative", "aggregate": "sum"},
+                "color": {
+                    "field": "EmployedUnemployed", 
+                    "type": "nominal"
+                },
+                "tooltip": [
+                    {"field": "EmployedUnemployed", "title": "Status"},
+                    {"field": "NumPeople", "type": "quantitative", "aggregate": "sum", "format": ",", "title": "Number of People"}
+                ]
+            }
+        }
+    ]
+}
